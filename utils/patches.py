@@ -6,6 +6,7 @@ import torch
 import functools
 from comfy.model_patcher import ModelPatcher
 import comfy.model_management
+import comfy.weight_adapter as weight_adapter
 
 def calculate_weight_adjust_channel(func):
     """Patches ComfyUI's LoRA weight application to accept multi-channel inputs."""
@@ -17,6 +18,9 @@ def calculate_weight_adjust_channel(func):
         for p in patches:
             alpha = p[0]
             v = p[1]
+
+            if isinstance(v, weight_adapter.WeightAdapterBase):
+                continue
 
             # The recursion call should be handled in the main func call.
             if isinstance(v, list):
